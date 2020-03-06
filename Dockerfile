@@ -12,6 +12,7 @@ RUN apk update \
   && pip install -U --no-cache-dir twine \
   && apk del .build-deps
 
+WORKDIR /wdir
 COPY script.sh .
 RUN chmod +x script.sh
-ENTRYPOINT ["script.sh"]
+ENTRYPOINT ["/wdir/script.sh"]
