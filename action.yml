@@ -1,0 +1,46 @@
+name: PyPI Deployment
+author: Casper da Costa-Luis
+description: Securely build and upload Python distributions to PyPI
+
+inputs:
+  user:
+    description: PyPI username
+    required: false
+    default: __token__
+  password:
+    description: PyPI password or API token
+    required: true
+  build:
+    description: Whether to run `setup.py sdist bdist_wheel`
+    required: false
+    default: false
+  dist_dir:
+    description: Directory containing distributions
+    required: false
+    default: dist
+  url:
+    description: Destination repository (package index) URL
+    required: false
+  gpg_key:
+    description: GPG key to import for signing
+    required: false
+  skip_existing:
+    description: Continue uploading files if one already exists
+    required: false
+    default: false
+
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+  - ${{ inputs.user }}
+  - ${{ inputs.password }}
+  - ${{ inputs.build }}
+  - ${{ inputs.dist_dir }}
+  - ${{ inputs.url }}
+  - ${{ inputs.gpg_key }}
+  - ${{ inputs.skip_existing }}
+
+branding:
+  icon: upload-cloud
+  color: blue
