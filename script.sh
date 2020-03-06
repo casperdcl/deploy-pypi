@@ -8,7 +8,7 @@ fi
 
 if [[ -n "$INPUT_GPG_KEY" ]]; then
   gpg --import <(echo "$INPUT_GPG_KEY")
-  TWINE_OPTS="$TWINE_OPTS --sign-with gpg"
+  TWINE_OPTS="$TWINE_OPTS -s --sign-with gpg"
 fi
 
 if [[ -n "$INPUT_URL" ]]; then
