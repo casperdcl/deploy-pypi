@@ -3,6 +3,29 @@ GitHub Action: PyPI Deployment
 
 Securely build and upload Python distributions to PyPI.
 
+## Example
+
+```yaml
+    steps:
+      - uses: actions/checkout@v2
+      - uses: casperdcl/deploy-pypi@v1
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+        with:
+          password: ${{ secrets.pypi_token }}
+          build: true
+```
+
+## Why
+
+PyPI Deployment:
+
+- Supports `build`ing
+- Supports GPG signing
+- Supports skipping existing uploads
+
+The main alternative GitHub Action
+[pypi-publish](https://github.com/marketplace/actions/pypi-publish)
+currently does not support these features.
 
 ## Inputs
 
@@ -33,16 +56,4 @@ inputs:
     description: Continue uploading files if one already exists
     required: false
     default: false
-```
-
-## Example
-
-```yaml
-    steps:
-      - uses: actions/checkout@v2
-      - uses: casperdcl/deploy-pypi@v1
-        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-        with:
-          password: ${{ secrets.pypi_token }}
-          build: true
 ```
