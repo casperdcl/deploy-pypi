@@ -22,6 +22,7 @@ PyPI Deployment:
 - Supports `build`ing
 - Supports GPG signing
 - Supports skipping existing uploads
+- Is based on a tiny Docker image
 
 The main alternative GitHub Action
 [pypi-publish](https://github.com/marketplace/actions/pypi-publish)
