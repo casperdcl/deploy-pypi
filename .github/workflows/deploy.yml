@@ -1,8 +1,6 @@
-name: Test
+name: Deploy
 on:
   push:
-    branches:
-      - '*'
     tags:
       - '*'
 jobs:
@@ -12,13 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Deploy Docker
-        # if: startsWith(github.event.ref, 'refs/tags')
-        # if: github.ref == 'refs/heads/master'
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
           name: ${{ github.actor }}/deploy-pypi/deploy-pypi
-          # tags: ${{ github.ref }}
-          tags: latest
+          tags: latest,${{ github.ref }}
           password: ${{ github.token }}
           username: ${{ github.actor }}
           registry: docker.pkg.github.com
