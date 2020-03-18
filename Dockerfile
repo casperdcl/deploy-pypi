@@ -1,7 +1,7 @@
 FROM python:3.7-alpine
 LABEL maintainer.name="Casper da Costa-Luis" \
       maintainer.email="casper.dcl@physics.org" \
-      repository.ulr="https://github.com/casperdcl/deploy-pypi"
+      repository.url="https://github.com/casperdcl/deploy-pypi"
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
