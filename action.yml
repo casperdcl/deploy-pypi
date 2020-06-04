@@ -31,7 +31,7 @@ inputs:
 
 runs:
   using: docker
-  image: 'cached.Dockerfile'
+  image: Dockerfile
   args:
   - ${{ inputs.user }}
   - ${{ inputs.password }}
