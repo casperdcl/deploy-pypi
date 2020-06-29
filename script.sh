@@ -20,5 +20,6 @@ if [[ "$INPUT_BUILD" == true ]]; then
   python setup.py sdist bdist_wheel
 fi
 
+twine check "${INPUT_DIST_DIR%%/}"/*
 TWINE_USERNAME="$INPUT_USER" TWINE_PASSWORD="$INPUT_PASSWORD" \
   exec twine upload $TWINE_OPTS "${INPUT_DIST_DIR%%/}"/*
