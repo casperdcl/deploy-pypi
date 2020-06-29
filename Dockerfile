@@ -10,7 +10,8 @@ RUN apk update \
   && apk --no-cache add --virtual .build-deps gcc musl-dev libffi-dev openssl-dev \
   && apk del libressl-dev \
   && pip install -U --no-cache-dir twine \
-  && apk del .build-deps
+  && apk del .build-deps \
+  && apk add git
 
 WORKDIR /wdir
 COPY script.sh .
