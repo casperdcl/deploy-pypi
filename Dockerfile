@@ -5,7 +5,7 @@ LABEL maintainer.name="Casper da Costa-Luis" \
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update && apk --no-cache add gnupg bash
+RUN apk update && apk --no-cache add gnupg bash git
 RUN apk update \
   && apk --no-cache add --virtual .build-deps gcc musl-dev libffi-dev openssl-dev \
   && apk del libressl-dev \
