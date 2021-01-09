@@ -28,10 +28,12 @@ PyPI Deployment:
 - Each stage is optional (`build`, `check`, `sign` and `upload`)
 - Uses a blazing fast native GitHub composite action
 - Outputs names of files for upload (for convenience in subsequent steps)
+- Has the entirety of the code in a [single file](https://github.com/casperdcl/deploy-pypi/blob/master/action.yml), making it very easy to review
+  + If you are [extremely security conscious](https://github.com/casperdcl/deploy-pypi/issues/6#issuecomment-721954322) you can use a commit SHA of a version you've manually reviewed (e.g. `uses: casperdcl/deploy-pypi@`[125aa19](https://github.com/casperdcl/deploy-pypi/commit/125aa19bf9c5a273d5f45648af4b4cb42ca3ddc1))
 
 The main alternative GitHub Action
 [pypi-publish](https://github.com/marketplace/actions/pypi-publish)
-currently does not support these features.
+currently does not offer the benefits above.
 
 Other features (supported by both) include:
 
