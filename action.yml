@@ -41,6 +41,19 @@ inputs:
     description: Continue uploading files if one already exists
     required: false
     default: false
+outputs:
+  whl:
+    description: Basename of *.whl for upload
+    value: ${{ steps.upload.outputs.whl }}
+  targz:
+    description: Basename of *.tar.gz for upload
+    value: ${{ steps.upload.outputs.targz }}
+  whl_asc:
+    description: Basename of *.whl.asc for upload (requires <gpg_key>)
+    value: ${{ steps.upload.outputs.whl_asc }}
+  targz_asc:
+    description: Basename of *.tar.gz.asc for upload (requires <gpg_key>)
+    value: ${{ steps.upload.outputs.targz_asc }}
 runs:
   using: composite
   steps:
@@ -68,8 +81,10 @@ runs:
       env:
         INPUT_DIST_DIR: ${{ inputs.dist_dir }}
         INPUT_CHECK: ${{ inputs.check }}
-    - name: upload
+    - id: upload
+      name: upload
       run: |
+        DIST="${INPUT_DIST_DIR%%/}"
         if [[ "$INPUT_UPLOAD" == true ]]; then
           TWINE_OPTS=""
           if [[ -n "$INPUT_GPG_KEY" ]]; then
@@ -79,8 +94,14 @@ runs:
           if [[ "$INPUT_SKIP_EXISTING" == true ]]; then
             TWINE_OPTS="$TWINE_OPTS --skip-existing"
           fi
-          python -m twine upload $TWINE_OPTS "${INPUT_DIST_DIR%%/}"/*
+          python -m twine upload $TWINE_OPTS "${DIST}"/*
         fi
+        pushd "$DIST"
+        echo "::set-output name=whl::$(ls *.whl || :)"
+        echo "::set-output name=whl_asc::$(ls *.whl.asc || :)"
+        echo "::set-output name=targz::$(ls *.tar.gz || :)"
+        echo "::set-output name=targz_asc::$(ls *.tar.gz.asc || :)"
+        popd
       shell: bash
       env:
         INPUT_UPLOAD: ${{ inputs.upload }}

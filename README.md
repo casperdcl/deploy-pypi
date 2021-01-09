@@ -27,6 +27,7 @@ PyPI Deployment:
 - Supports GPG signing
 - Each stage is optional (`build`, `check`, `sign` and `upload`)
 - Uses a blazing fast native GitHub composite action
+- Outputs names of files for upload (for convenience in subsequent steps)
 
 The main alternative GitHub Action
 [pypi-publish](https://github.com/marketplace/actions/pypi-publish)
@@ -51,7 +52,7 @@ inputs:
     description: Build requirements
     default: twine wheel
   build:
-    description: `setup.py` command to run ("true" is a shortcut for "clean sdist -d <dist_dir> bdist_wheel -d <dist_dir>")
+    description: '`setup.py` command to run ("true" is a shortcut for "clean sdist -d <dist_dir> bdist_wheel -d <dist_dir>")'
     default: false
   check:
     description: Whether to run basic checks on the built files
@@ -71,4 +72,13 @@ inputs:
   skip_existing:
     description: Continue uploading files if one already exists
     default: false
+outputs:
+  wheel:
+    description: Basename of *.whl for upload
+  targz:
+    description: Basename of *.tar.gz for upload
+  wheel_asc:
+    description: Basename of *.whl.asc for upload (requires <gpg_key>)
+  targz_asc:
+    description: Basename of *.tar.gz.asc for upload (requires <gpg_key>)
 ```

@@ -12,11 +12,24 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-      - uses: ./.github/..
+      - name: setup
+        run: |
+          mkdir epic
+          touch epic/some.whl
+          touch epic/some.whl.asc
+          touch epic/source.tar.gz
+      - id: action
+        uses: ./.github/..
         with:
           password: pass
           check: false
           upload: false
-          dist_dir: .
+          dist_dir: epic
           url: https://test.pypi.org
           gpg_key: ${{ secrets.GPG_KEY }}
+      - name: test
+        run: |
+          [[ ${{ steps.action.outputs.whl }} == some.whl ]]
+          [[ ${{ steps.action.outputs.whl_asc }} == some.whl.asc ]]
+          [[ ${{ steps.action.outputs.targz }} == source.tar.gz ]]
+          [[ -z "${{ steps.action.outputs.targz_asc }}" ]]
