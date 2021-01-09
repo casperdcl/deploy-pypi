@@ -22,7 +22,8 @@ Securely build and upload Python distributions to PyPI.
 PyPI Deployment:
 
 - Supports `build`ing
-  + supports fully customisable build command
+  + supports customisable build requirements
+  + supports customisable build command
 - Supports GPG signing
 - Each stage is optional (`build`, `check`, `sign` and `upload`)
 - Uses a blazing fast native GitHub composite action
@@ -46,6 +47,9 @@ inputs:
   password:
     description: PyPI password or API token
     required: true
+  requirements:
+    description: Build requirements
+    default: twine wheel
   build:
     description: `setup.py` command to run ("true" is a shortcut for "clean sdist -d <dist_dir> bdist_wheel -d <dist_dir>")
     default: false
