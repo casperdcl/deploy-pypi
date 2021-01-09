@@ -9,6 +9,10 @@ inputs:
   password:
     description: PyPI password or API token
     required: true
+  requirements:
+    description: Build requirements
+    required: false
+    default: twine wheel
   build:
     description: '`setup.py` command to run ("true" is a shortcut for "clean sdist -d <dist_dir> bdist_wheel -d <dist_dir>")'
     required: false
@@ -37,14 +41,27 @@ inputs:
     description: Continue uploading files if one already exists
     required: false
     default: false
+outputs:
+  whl:
+    description: Basename of *.whl for upload
+    value: ${{ steps.upload.outputs.whl }}
+  targz:
+    description: Basename of *.tar.gz for upload
+    value: ${{ steps.upload.outputs.targz }}
+  whl_asc:
+    description: Basename of *.whl.asc for upload (requires <gpg_key>)
+    value: ${{ steps.upload.outputs.whl_asc }}
+  targz_asc:
+    description: Basename of *.tar.gz.asc for upload (requires <gpg_key>)
+    value: ${{ steps.upload.outputs.targz_asc }}
 runs:
   using: composite
   steps:
-    - name: setup
-      run: pip install -r ${{ github.action_path }}/requirements.txt
-      shell: bash
     - name: build
       run: |
+        if [[ -n "$INPUT_REQUIREMENTS" && "$INPUT_BUILD" != false ]]; then
+          python -m pip install $INPUT_REQUIREMENTS
+        fi
         if [[ "$INPUT_BUILD" == *build* || "$INPUT_BUILD" == *dist* || "$INPUT_BUILD" == *clean* ]]; then
           python setup.py $INPUT_BUILD
         elif [[ "$INPUT_BUILD" == true ]]; then
@@ -52,45 +69,48 @@ runs:
         fi
       shell: bash
       env:
+        INPUT_REQUIREMENTS: ${{ inputs.requirements }}
         INPUT_BUILD: ${{ inputs.build }}
         INPUT_DIST_DIR: ${{ inputs.dist_dir }}
     - name: check
       run: |
         if [[ "$INPUT_CHECK" == true ]]; then
-          twine check "${INPUT_DIST_DIR%%/}"/*
+          python -m twine check "${INPUT_DIST_DIR%%/}"/*
         fi
       shell: bash
       env:
         INPUT_DIST_DIR: ${{ inputs.dist_dir }}
         INPUT_CHECK: ${{ inputs.check }}
-    - name: upload
+    - id: upload
+      name: upload
       run: |
-        set -exo pipefail
+        DIST="${INPUT_DIST_DIR%%/}"
         if [[ "$INPUT_UPLOAD" == true ]]; then
           TWINE_OPTS=""
-          if [[ "$INPUT_SKIP_EXISTING" == true ]]; then
-            TWINE_OPTS="$TWINE_OPTS --skip-existing"
-          fi
           if [[ -n "$INPUT_GPG_KEY" ]]; then
             gpg --import <(echo "$INPUT_GPG_KEY")
             TWINE_OPTS="$TWINE_OPTS -s --sign-with gpg"
           fi
-          if [[ -n "$INPUT_URL" ]]; then
-            export TWINE_REPOSITORY_URL="$INPUT_URL"
+          if [[ "$INPUT_SKIP_EXISTING" == true ]]; then
+            TWINE_OPTS="$TWINE_OPTS --skip-existing"
           fi
-
-          TWINE_USERNAME="$INPUT_USER" TWINE_PASSWORD="$INPUT_PASSWORD" \
-            exec twine upload $TWINE_OPTS "${INPUT_DIST_DIR%%/}"/*
+          python -m twine upload $TWINE_OPTS "${DIST}"/*
         fi
+        pushd "$DIST"
+        echo "::set-output name=whl::$(ls *.whl || :)"
+        echo "::set-output name=whl_asc::$(ls *.whl.asc || :)"
+        echo "::set-output name=targz::$(ls *.tar.gz || :)"
+        echo "::set-output name=targz_asc::$(ls *.tar.gz.asc || :)"
+        popd
       shell: bash
       env:
         INPUT_UPLOAD: ${{ inputs.upload }}
-        INPUT_USER: ${{ inputs.user }}
-        INPUT_PASSWORD: ${{ inputs.password }}
         INPUT_DIST_DIR: ${{ inputs.dist_dir }}
-        INPUT_URL: ${{ inputs.url }}
         INPUT_GPG_KEY: ${{ inputs.gpg_key }}
         INPUT_SKIP_EXISTING: ${{ inputs.skip_existing }}
+        TWINE_REPOSITORY_URL: ${{ inputs.url }}
+        TWINE_USERNAME: ${{ inputs.user }}
+        TWINE_PASSWORD: ${{ inputs.password }}
 branding:
   icon: upload-cloud
   color: blue
