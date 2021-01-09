@@ -75,11 +75,11 @@ inputs:
     description: Continue uploading files if one already exists
     default: false
 outputs:
-  wheel:
+  whl:
     description: Basename of *.whl for upload
   targz:
     description: Basename of *.tar.gz for upload
-  wheel_asc:
+  whl_asc:
     description: Basename of *.whl.asc for upload (requires <gpg_key>)
   targz_asc:
     description: Basename of *.tar.gz.asc for upload (requires <gpg_key>)
