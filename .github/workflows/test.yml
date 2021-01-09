@@ -1,0 +1,22 @@
+name: Test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [2.7, 3.5, 3.9]
+    name: Test py${{ matrix.python }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: ./.github/..
+        with:
+          password: pass
+          check: false
+          upload: false
+          dist_dir: .
+          url: https://test.pypi.org
+          gpg_key: ${{ secrets.GPG_KEY }}
