@@ -14,7 +14,7 @@ Securely build and upload Python distributions to PyPI.
           password: ${{ secrets.pypi_token }}
           build: true
           # only upload if a tag is pushed (otherwise just build & check)
-          skip_upload: ${{ github.event_name != 'push' || !startsWith(github.event.ref, 'refs/tags') }}
+          upload: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
 ```
 
 ## Why
