@@ -1,6 +1,8 @@
 GitHub Action: PyPI Deployment
 ==============================
 
+[![Test](https://github.com/casperdcl/deploy-pypi/actions/workflows/test.yml/badge.svg)](https://github.com/casperdcl/deploy-pypi/actions/workflows/test.yml)
+
 Securely build and upload Python distributions to PyPI.
 
 ## Example
