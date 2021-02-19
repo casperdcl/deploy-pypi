@@ -63,7 +63,7 @@ runs:
   steps:
     - name: build
       run: |
-        if [[ -n "$INPUT_REQUIREMENTS" && "$INPUT_BUILD" != false ]]; then
+        if [[ -n "$INPUT_REQUIREMENTS" && "$INPUT_BUILD$INPUT_PIP" != falsefalse ]]; then
           python -m pip install $INPUT_REQUIREMENTS
         fi
         if [[ "$INPUT_PIP" == wheel* ]]; then
