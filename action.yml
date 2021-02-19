@@ -17,6 +17,10 @@ inputs:
     description: '`setup.py` command to run ("true" is a shortcut for "clean sdist -d <dist_dir> bdist_wheel -d <dist_dir>")'
     required: false
     default: false
+  pip:
+    description: '`pip` command to run ("true" is a shortcut for "wheel -w <dist_dir> --no-deps .")'
+    required: false
+    default: false
   check:
     description: Whether to run basic checks on the built files
     required: false
@@ -62,6 +66,11 @@ runs:
         if [[ -n "$INPUT_REQUIREMENTS" && "$INPUT_BUILD" != false ]]; then
           python -m pip install $INPUT_REQUIREMENTS
         fi
+        if [[ "$INPUT_PIP" == wheel* ]]; then
+          python -m pip $INPUT_PIP
+        elif [[ "$INPUT_PIP" == true ]]; then
+          python -m pip wheel -w "$INPUT_DIST_DIR" --no-deps .
+        fi
         if [[ "$INPUT_BUILD" == *build* || "$INPUT_BUILD" == *dist* || "$INPUT_BUILD" == *clean* ]]; then
           python setup.py $INPUT_BUILD
         elif [[ "$INPUT_BUILD" == true ]]; then
@@ -71,6 +80,7 @@ runs:
       env:
         INPUT_REQUIREMENTS: ${{ inputs.requirements }}
         INPUT_BUILD: ${{ inputs.build }}
+        INPUT_PIP: ${{ inputs.pip }}
         INPUT_DIST_DIR: ${{ inputs.dist_dir }}
     - name: check
       run: |

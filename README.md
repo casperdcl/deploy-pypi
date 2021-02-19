@@ -1,6 +1,8 @@
 GitHub Action: PyPI Deployment
 ==============================
 
+[![Test](https://github.com/casperdcl/deploy-pypi/actions/workflows/test.yml/badge.svg)](https://github.com/casperdcl/deploy-pypi/actions/workflows/test.yml)
+
 Securely build and upload Python distributions to PyPI.
 
 ## Example
@@ -11,8 +13,8 @@ Securely build and upload Python distributions to PyPI.
       - uses: actions/setup-python@v2
       - uses: casperdcl/deploy-pypi@v2
         with:
-          password: ${{ secrets.pypi_token }}
-          build: true
+          password: ${{ secrets.PYPI_TOKEN }}
+          pip: wheel -w dist/ --no-deps .
           # only upload if a tag is pushed (otherwise just build & check)
           upload: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
 ```
@@ -24,6 +26,7 @@ PyPI Deployment:
 - Supports `build`ing
   + supports customisable build requirements
   + supports customisable build command
+  + supports [PEP517](https://www.python.org/dev/peps/pep-0517) projects lacking a `setup.py` file
 - Supports GPG signing
 - Each stage is optional (`build`, `check`, `sign` and `upload`)
 - Uses a blazing fast native GitHub composite action
@@ -55,6 +58,9 @@ inputs:
     default: twine wheel
   build:
     description: '`setup.py` command to run ("true" is a shortcut for "clean sdist -d <dist_dir> bdist_wheel -d <dist_dir>")'
+    default: false
+  pip:
+    description: '`pip` command to run ("true" is a shortcut for "wheel -w <dist_dir> --no-deps .")'
     default: false
   check:
     description: Whether to run basic checks on the built files
