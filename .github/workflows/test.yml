@@ -1,35 +1,40 @@
 name: Test
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  schedule:
+  - cron: '10 23 * * 1'  # M H d m w (Sat 23:10)
 jobs:
   test:
+    if: github.event_name != 'pull_request' || github.repository_owner != 'casperdcl'
+    name: Test py${{ matrix.python }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python: [2.7, 3.5, 3.9]
-    name: Test py${{ matrix.python }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-      - name: setup
-        run: |
-          mkdir epic
-          touch epic/some.whl
-          touch epic/some.whl.asc
-          touch epic/source.tar.gz
-      - id: action
-        uses: ./.github/..
-        with:
-          password: pass
-          check: false
-          upload: false
-          dist_dir: epic
-          url: https://test.pypi.org
-          gpg_key: ${{ secrets.GPG_KEY }}
-      - name: test
-        run: |
-          [[ ${{ steps.action.outputs.whl }} == some.whl ]]
-          [[ ${{ steps.action.outputs.whl_asc }} == some.whl.asc ]]
-          [[ ${{ steps.action.outputs.targz }} == source.tar.gz ]]
-          [[ -z "${{ steps.action.outputs.targz_asc }}" ]]
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python }}
+    - name: setup
+      run: |
+        mkdir epic
+        touch epic/some.whl
+        touch epic/some.whl.asc
+        touch epic/source.tar.gz
+    - id: action
+      uses: ./.github/..
+      with:
+        password: pass
+        check: false
+        upload: false
+        dist_dir: epic
+        url: https://test.pypi.org
+        gpg_key: ${{ secrets.GPG_KEY }}
+    - name: test
+      run: |
+        [[ ${{ steps.action.outputs.whl }} == some.whl ]]
+        [[ ${{ steps.action.outputs.whl_asc }} == some.whl.asc ]]
+        [[ ${{ steps.action.outputs.targz }} == source.tar.gz ]]
+        [[ -z "${{ steps.action.outputs.targz_asc }}" ]]
