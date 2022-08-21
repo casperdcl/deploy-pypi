@@ -6,7 +6,7 @@ on:
   - cron: '10 23 * * 1'  # M H d m w (Sat 23:10)
 jobs:
   test:
-    if: github.event_name != 'pull_request' || github.repository_owner != 'casperdcl'
+    if: github.event_name != 'pull_request' || !contains('OWNER,MEMBER,COLLABORATOR', github.event.pull_request.author_association)
     name: Test py${{ matrix.python }}
     runs-on: ubuntu-latest
     strategy:
