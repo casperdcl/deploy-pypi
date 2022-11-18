@@ -107,10 +107,10 @@ runs:
           python -m twine upload $TWINE_OPTS "${DIST}"/*
         fi
         pushd "$DIST"
-        echo "::set-output name=whl::$(ls *.whl || :)"
-        echo "::set-output name=whl_asc::$(ls *.whl.asc || :)"
-        echo "::set-output name=targz::$(ls *.tar.gz || :)"
-        echo "::set-output name=targz_asc::$(ls *.tar.gz.asc || :)"
+        echo "whl=$(ls *.whl || :)" >> $GITHUB_OUTPUT
+        echo "whl_asc=$(ls *.whl.asc || :)" >> $GITHUB_OUTPUT
+        echo "targz=$(ls *.tar.gz || :)" >> $GITHUB_OUTPUT
+        echo "targz_asc=$(ls *.tar.gz.asc || :)" >> $GITHUB_OUTPUT
         popd
       shell: bash
       env:
