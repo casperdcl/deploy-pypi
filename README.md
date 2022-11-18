@@ -9,8 +9,8 @@ Securely build and upload Python distributions to PyPI.
 
 ```yaml
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
       - uses: casperdcl/deploy-pypi@v2
         with:
           password: ${{ secrets.PYPI_TOKEN }}
@@ -32,7 +32,7 @@ PyPI Deployment:
 - Uses a blazing fast native GitHub composite action
 - Outputs names of files for upload (for convenience in subsequent steps)
 - Has the entirety of the code in a [single file](https://github.com/casperdcl/deploy-pypi/blob/master/action.yml), making it very easy to review
-  + If you are [extremely security conscious](https://github.com/casperdcl/deploy-pypi/issues/6#issuecomment-721954322) you can use a commit SHA of a version you've manually reviewed (e.g. `uses: casperdcl/deploy-pypi@`[125aa19](https://github.com/casperdcl/deploy-pypi/commit/125aa19bf9c5a273d5f45648af4b4cb42ca3ddc1))
+  + If you are [extremely security conscious](https://github.com/casperdcl/deploy-pypi/issues/6#issuecomment-721954322) you can use a commit SHA of a version you've manually reviewed (e.g. `uses: casperdcl/deploy-pypi@`[3181cc0919c032ba42e365bd514e27442c54a3be](https://github.com/casperdcl/deploy-pypi/commit/3181cc0919c032ba42e365bd514e27442c54a3be))
 
 The main alternative GitHub Action
 [pypi-publish](https://github.com/marketplace/actions/pypi-publish)
