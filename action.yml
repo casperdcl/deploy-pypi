@@ -12,9 +12,13 @@ inputs:
   requirements:
     description: Build requirements
     required: false
-    default: twine wheel
-  build:
+    default: twine wheel build
+  setup:
     description: '`setup.py` command to run ("true" is a shortcut for "clean sdist -d <dist_dir> bdist_wheel -d <dist_dir>")'
+    required: false
+    default: false
+  build:
+    description: '`python -m build` command to run ("true" is a shortcut for "-o <dist_dir>")'
     required: false
     default: false
   pip:
@@ -63,22 +67,31 @@ runs:
   steps:
     - name: build
       run: |
-        if [[ -n "$INPUT_REQUIREMENTS" && "$INPUT_BUILD$INPUT_PIP" != falsefalse ]]; then
+        if [[ -n "$INPUT_REQUIREMENTS" && "$INPUT_SETUP$INPUT_BUILD$INPUT_PIP" != falsefalsefalse ]]; then
           python -m pip install $INPUT_REQUIREMENTS
         fi
-        if [[ "$INPUT_PIP" == wheel* ]]; then
-          python -m pip $INPUT_PIP
-        elif [[ "$INPUT_PIP" == true ]]; then
+        if [[ "$INPUT_PIP" == true ]]; then
           python -m pip wheel -w "$INPUT_DIST_DIR" --no-deps .
+        elif [[ "$INPUT_PIP" != false ]]; then
+          python -m pip $INPUT_PIP
         fi
-        if [[ "$INPUT_BUILD" == *build* || "$INPUT_BUILD" == *dist* || "$INPUT_BUILD" == *clean* ]]; then
+        if [[ "$INPUT_BUILD" == build* || "$INPUT_BUILD" == dist* || "$INPUT_BUILD" == clean* ]]; then
+          echo "::warning title=deploy-pypi::assuming `with.setup` instead of `with.build`"
           python setup.py $INPUT_BUILD
         elif [[ "$INPUT_BUILD" == true ]]; then
+          python -m build -o "$INPUT_DIST_DIR"
+        elif [[ "$INPUT_BUILD" != false ]]; then
+          python -m build $INPUT_BUILD
+        fi
+        if [[ "$INPUT_SETUP" == true ]]; then
           python setup.py sdist -d "$INPUT_DIST_DIR" bdist_wheel -d "$INPUT_DIST_DIR"
+        elif [[ "$INPUT_SETUP" != false ]]; then
+          python setup.py $INPUT_SETUP
         fi
       shell: bash
       env:
         INPUT_REQUIREMENTS: ${{ inputs.requirements }}
+        INPUT_SETUP: ${{ inputs.setup }}
         INPUT_BUILD: ${{ inputs.build }}
         INPUT_PIP: ${{ inputs.pip }}
         INPUT_DIST_DIR: ${{ inputs.dist_dir }}

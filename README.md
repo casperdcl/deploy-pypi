@@ -14,7 +14,7 @@ Securely build and upload Python distributions to PyPI.
       - uses: casperdcl/deploy-pypi@v2
         with:
           password: ${{ secrets.PYPI_TOKEN }}
-          pip: wheel -w dist/ --no-deps .
+          build: --sdist --wheel --outdir dist .
           # only upload if a tag is pushed (otherwise just build & check)
           upload: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
 ```
@@ -45,6 +45,8 @@ Other features (supported by both) include:
 
 ## Inputs
 
+You likely should specify exactly one of the following: `setup`, `build` or `pip`.
+
 ```yaml
 inputs:
   user:
@@ -55,9 +57,12 @@ inputs:
     required: true
   requirements:
     description: Build requirements
-    default: twine wheel
-  build:
+    default: twine wheel build
+  setup:
     description: '`setup.py` command to run ("true" is a shortcut for "clean sdist -d <dist_dir> bdist_wheel -d <dist_dir>")'
+    default: false
+  build:
+    description: '`python -m build` command to run ("true" is a shortcut for "-o <dist_dir>")'
     default: false
   pip:
     description: '`pip` command to run ("true" is a shortcut for "wheel -w <dist_dir> --no-deps .")'
