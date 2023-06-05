@@ -10,7 +10,7 @@ inputs:
     description: PyPI password or API token
     required: true
   requirements:
-    description: Build requirements
+    description: Packages to `pip install` before building
     required: false
     default: twine wheel build
   setup:
@@ -79,8 +79,10 @@ runs:
           echo "::warning title=deploy-pypi::assuming `with.setup` instead of `with.build`"
           python setup.py $INPUT_BUILD
         elif [[ "$INPUT_BUILD" == true ]]; then
+          python -m pip install build
           python -m build -o "$INPUT_DIST_DIR"
         elif [[ "$INPUT_BUILD" != false ]]; then
+          python -m pip install build
           python -m build $INPUT_BUILD
         fi
         if [[ "$INPUT_SETUP" == true ]]; then
@@ -98,6 +100,7 @@ runs:
     - name: check
       run: |
         if [[ "$INPUT_CHECK" == true ]]; then
+          python -m pip install twine
           python -m twine check "${INPUT_DIST_DIR%%/}"/*
         fi
       shell: bash
@@ -117,6 +120,7 @@ runs:
           if [[ "$INPUT_SKIP_EXISTING" == true ]]; then
             TWINE_OPTS="$TWINE_OPTS --skip-existing"
           fi
+          python -m pip install twine
           python -m twine upload $TWINE_OPTS "${DIST}"/*
         fi
         pushd "$DIST"

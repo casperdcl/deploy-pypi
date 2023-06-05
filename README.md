@@ -56,7 +56,7 @@ inputs:
     description: PyPI password or API token
     required: true
   requirements:
-    description: Build requirements
+    description: Packages to `pip install` before building
     default: twine wheel build
   setup:
     description: '`setup.py` command to run ("true" is a shortcut for "clean sdist -d <dist_dir> bdist_wheel -d <dist_dir>")'
