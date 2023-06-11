@@ -75,7 +75,7 @@ runs:
         elif [[ "$INPUT_PIP" != false ]]; then
           python -m pip $INPUT_PIP
         fi
-        if [[ "$INPUT_BUILD" == build* || "$INPUT_BUILD" == dist* || "$INPUT_BUILD" == clean* ]]; then
+        if [[ "$INPUT_BUILD" == build* || "$INPUT_BUILD" == [bs]dist* || "$INPUT_BUILD" == clean* ]]; then
           echo "::warning title=deploy-pypi::assuming `with.setup` instead of `with.build`"
           python setup.py $INPUT_BUILD
         elif [[ "$INPUT_BUILD" == true ]]; then
