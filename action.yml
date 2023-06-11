@@ -76,7 +76,7 @@ runs:
           python -m pip $INPUT_PIP
         fi
         if [[ "$INPUT_BUILD" == build* || "$INPUT_BUILD" == [bs]dist* || "$INPUT_BUILD" == clean* ]]; then
-          echo "::warning title=deploy-pypi::assuming `with.setup` instead of `with.build`"
+          echo '::warning title=deploy-pypi::assuming `with.setup` instead of `with.build`'
           python setup.py $INPUT_BUILD
         elif [[ "$INPUT_BUILD" == true ]]; then
           python -m pip install build
