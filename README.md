@@ -42,6 +42,7 @@ Other features (supported by both) include:
 
 - Supports checking built files
 - Supports skipping existing uploads
+- Supports OIDC PyPI trusted publishing
 
 ## Inputs
 
@@ -54,7 +55,11 @@ inputs:
     default: __token__
   password:
     description: PyPI password or API token
-    required: true
+    required: false
+  registry_domain:
+    description: PyPI trusted publisher URL
+    required: false
+    default: https://upload.pypi.org
   requirements:
     description: Packages to `pip install` before building
     default: twine wheel build

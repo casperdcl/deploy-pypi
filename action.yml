@@ -8,7 +8,11 @@ inputs:
     default: __token__
   password:
     description: PyPI password or API token
-    required: true
+    required: false
+  registry_domain:
+    description: PyPI trusted publisher URL
+    required: false
+    default: https://upload.pypi.org
   requirements:
     description: Packages to `pip install` before building
     required: false
@@ -121,6 +125,21 @@ runs:
             TWINE_OPTS="$TWINE_OPTS --skip-existing"
           fi
           python -m pip install twine
+          if [[ -z "$TWINE_PASSWORD" ]]; then
+            # vis https://docs.pypi.org/trusted-publishers/using-a-publisher/#the-manual-way
+            export TWINE_PASSWORD=$(
+        python -c 'import json, os, urllib.request as req
+        audience = req.urlopen(os.getenv("INPUT_REGISTRY_DOMAIN") + "/_/oidc/audience").read()
+        token = json.load(req.urlopen(req.Request(
+            url=os.getenv("ACTIONS_ID_TOKEN_REQUEST_URL"),
+            data=audience,
+            headers={"Authorization": "bearer " + os.getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")},
+            method="GET")))
+        print(json.load(req.urlopen(req.Request(
+            url=os.getenv("INPUT_REGISTRY_DOMAIN") + "/_/oidc/github/mint-token",
+            data=json.dumps({"token": token["value"]}).encode(),
+            method="POST")))["token"], end="")')
+          fi
           python -m twine upload $TWINE_OPTS "${DIST}"/*
         fi
         pushd "$DIST"
@@ -138,6 +157,7 @@ runs:
         TWINE_REPOSITORY_URL: ${{ inputs.url }}
         TWINE_USERNAME: ${{ inputs.user }}
         TWINE_PASSWORD: ${{ inputs.password }}
+        INPUT_REGISTRY_DOMAIN: ${{ inputs.registry_domain }}
 branding:
   icon: upload-cloud
   color: blue
