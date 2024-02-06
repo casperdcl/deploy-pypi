@@ -1,5 +1,4 @@
-GitHub Action: PyPI Deployment
-==============================
+# GitHub Action: PyPI Deployment
 
 [![Test](https://github.com/casperdcl/deploy-pypi/actions/workflows/test.yml/badge.svg)](https://github.com/casperdcl/deploy-pypi/actions/workflows/test.yml)
 
@@ -9,11 +8,10 @@ Securely build and upload Python distributions to PyPI.
 
 ```yaml
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - uses: casperdcl/deploy-pypi@v2
         with:
-          password: ${{ secrets.PYPI_TOKEN }}
           build: --sdist --wheel --outdir dist .
           # only upload if a tag is pushed (otherwise just build & check)
           upload: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
