@@ -127,18 +127,9 @@ runs:
           python -m pip install twine
           if [[ -z "$TWINE_PASSWORD" ]]; then
             # vis https://docs.pypi.org/trusted-publishers/using-a-publisher/#the-manual-way
-            export TWINE_PASSWORD=$(
-        python -c 'import json, os, urllib.request as req
-        audience = req.urlopen(os.getenv("INPUT_REGISTRY_DOMAIN") + "/_/oidc/audience").read()
-        token = json.load(req.urlopen(req.Request(
-            url=os.getenv("ACTIONS_ID_TOKEN_REQUEST_URL"),
-            data=audience,
-            headers={"Authorization": "bearer " + os.getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")},
-            method="GET")))
-        print(json.load(req.urlopen(req.Request(
-            url=os.getenv("INPUT_REGISTRY_DOMAIN") + "/_/oidc/github/mint-token",
-            data=json.dumps({"token": token["value"]}).encode(),
-            method="POST")))["token"], end="")')
+            oidc_token=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=pypi" | jq -r '.value')
+            export TWINE_PASSWORD=$(curl https://pypi.org/_/oidc/mint-token -d "{\"token\": \"${oidc_token}\"}" | jq -r '.token')
+            echo "::add-mask::$TWINE_PASSWORD"
           fi
           python -m twine upload $TWINE_OPTS "${DIST}"/*
         fi
