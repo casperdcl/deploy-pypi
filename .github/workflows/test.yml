@@ -22,6 +22,7 @@ jobs:
         touch epic/some.whl
         touch epic/some.whl.asc
         touch epic/source.tar.gz
+        touch epic/someother.whl
     - id: action
       uses: ./.github/..
       with:
@@ -33,7 +34,7 @@ jobs:
         gpg_key: ${{ secrets.GPG_KEY }}
     - name: test
       run: |
-        [[ ${{ steps.action.outputs.whl }} == some.whl ]]
+        [[ '${{ steps.action.outputs.whl }}' == 'some.whl someother.whl' ]]
         [[ ${{ steps.action.outputs.whl_asc }} == some.whl.asc ]]
         [[ ${{ steps.action.outputs.targz }} == source.tar.gz ]]
         [[ -z "${{ steps.action.outputs.targz_asc }}" ]]

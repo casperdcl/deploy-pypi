@@ -134,8 +134,8 @@ runs:
           python -m twine upload $TWINE_OPTS "${DIST}"/*
         fi
         pushd "$DIST"
-        echo "whl=$(ls *.whl || :)" >> $GITHUB_OUTPUT
-        echo "whl_asc=$(ls *.whl.asc || :)" >> $GITHUB_OUTPUT
+        echo "whl=$( (ls *.whl || :) | tr '\n' ' ' | sed 's/ *$//' )" >> $GITHUB_OUTPUT
+        echo "whl_asc=$( (ls *.whl.asc || :) | tr '\n' ' ' | sed 's/ *$//' )" >> $GITHUB_OUTPUT
         echo "targz=$(ls *.tar.gz || :)" >> $GITHUB_OUTPUT
         echo "targz_asc=$(ls *.tar.gz.asc || :)" >> $GITHUB_OUTPUT
         popd
