@@ -44,11 +44,13 @@ inputs:
   url:
     description: Destination repository (package index) URL
     required: false
-    default: ''
+  attestations:
+    description: 'Use PEP 740 attestations if `upload`ing to a trusted publisher `registry_domain`'
+    required: false
+    default: true
   gpg_key:
     description: GPG key to import for signing
     required: false
-    default: ''
   skip_existing:
     description: Continue uploading files if one already exists
     required: false
@@ -130,6 +132,11 @@ runs:
             oidc_token=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=pypi" | jq -r '.value')
             export TWINE_PASSWORD=$(curl $INPUT_REGISTRY_DOMAIN/_/oidc/mint-token -d "{\"token\": \"${oidc_token}\"}" | jq -r '.token')
             echo "::add-mask::$TWINE_PASSWORD"
+            if [[ "$INPUT_ATTESTATIONS" == true ]]; then
+              python -m pip install 'twine>=5.1' pypi-attestations
+              python -m pypi_attestations sign "${DIST}"/*
+            fi
+            TWINE_OPTS="$TWINE_OPTS --attestations"
           fi
           python -m twine upload $TWINE_OPTS "${DIST}"/*
         fi
@@ -149,6 +156,7 @@ runs:
         TWINE_USERNAME: ${{ inputs.user }}
         TWINE_PASSWORD: ${{ inputs.password }}
         INPUT_REGISTRY_DOMAIN: ${{ inputs.registry_domain }}
+        INPUT_ATTESTATIONS: ${{ inputs.attestations }}
 branding:
   icon: upload-cloud
   color: blue
