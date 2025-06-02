@@ -24,7 +24,8 @@ PyPI Deployment:
 - Supports `build`ing
   + supports customisable build requirements
   + supports customisable build command
-  + supports [PEP517](https://www.python.org/dev/peps/pep-0517) projects lacking a `setup.py` file
+  + supports [PEP517](https://peps.python.org/pep-0517) projects lacking a `setup.py` file
+- Supports [PEP740](https://peps.python.org/pep-0740) attestations
 - Supports GPG signing
 - Each stage is optional (`build`, `check`, `sign` and `upload`)
 - Uses a blazing fast native GitHub composite action
@@ -53,10 +54,8 @@ inputs:
     default: __token__
   password:
     description: PyPI password or API token
-    required: false
   registry_domain:
     description: PyPI trusted publisher URL
-    required: false
     default: https://upload.pypi.org
   requirements:
     description: Packages to `pip install` before building
@@ -81,10 +80,11 @@ inputs:
     default: dist
   url:
     description: Destination repository (package index) URL
-    default: ''
+  attestations:
+    description: 'Use PEP 740 attestations if `upload`ing to a trusted publisher `registry_domain`'
+    default: true
   gpg_key:
     description: GPG key to import for signing
-    default: ''
   skip_existing:
     description: Continue uploading files if one already exists
     default: false
