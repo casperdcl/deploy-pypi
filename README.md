@@ -12,7 +12,7 @@ Securely build and upload Python distributions to PyPI.
       - uses: actions/setup-python@v5
       - uses: casperdcl/deploy-pypi@v2
         with:
-          build: --sdist --wheel --outdir dist .
+          build: --outdir dist .
           # only upload if a tag is pushed (otherwise just build & check)
           upload: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
 ```
@@ -28,10 +28,9 @@ PyPI Deployment:
 - Supports [PEP740](https://peps.python.org/pep-0740) attestations
 - Supports GPG signing
 - Each stage is optional (`build`, `check`, `sign` and `upload`)
-- Uses a blazing fast native GitHub composite action
+- Uses a blazing fast container-free GitHub action
 - Outputs names of files for upload (for convenience in subsequent steps)
 - Has the entirety of the code in a [single file](https://github.com/casperdcl/deploy-pypi/blob/master/action.yml), making it very easy to review
-  + If you are [extremely security conscious](https://github.com/casperdcl/deploy-pypi/issues/6#issuecomment-721954322) you can use a commit SHA of a version you've manually reviewed (e.g. `uses: casperdcl/deploy-pypi@`[3181cc0919c032ba42e365bd514e27442c54a3be](https://github.com/casperdcl/deploy-pypi/commit/3181cc0919c032ba42e365bd514e27442c54a3be))
 
 The main alternative GitHub Action
 [pypi-publish](https://github.com/marketplace/actions/pypi-publish)
@@ -42,6 +41,11 @@ Other features (supported by both) include:
 - Supports checking built files
 - Supports skipping existing uploads
 - Supports OIDC PyPI trusted publishing
+
+## Security
+
+- If you are [distrust me](https://github.com/casperdcl/deploy-pypi/issues/6#issuecomment-721954322), use a commit SHA of a version you've manually reviewed (e.g. `uses:` [casperdcl/deploy-pypi@3181cc0919c032ba42e365bd514e27442c54a3be](https://github.com/casperdcl/deploy-pypi/commit/3181cc0919c032ba42e365bd514e27442c54a3be))
+- If you [distrust dependencies](https://github.com/casperdcl/deploy-pypi/issues/22), spilt the `build` and `upload` steps to hide publishing/OIDC tokens from the build step
 
 ## Inputs
 
