@@ -103,6 +103,7 @@ runs:
         INPUT_BUILD: ${{ inputs.build }}
         INPUT_PIP: ${{ inputs.pip }}
         INPUT_DIST_DIR: ${{ inputs.dist_dir }}
+        ACTIONS_ID_TOKEN_REQUEST_TOKEN: ""
     - name: check
       run: |
         if [[ "$INPUT_CHECK" == true ]]; then
@@ -113,6 +114,7 @@ runs:
       env:
         INPUT_DIST_DIR: ${{ inputs.dist_dir }}
         INPUT_CHECK: ${{ inputs.check }}
+        ACTIONS_ID_TOKEN_REQUEST_TOKEN: ""
     - id: upload
       name: upload
       run: |

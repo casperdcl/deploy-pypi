@@ -44,8 +44,7 @@ Other features (supported by both) include:
 
 ## Security
 
-- If you are [distrust me](https://github.com/casperdcl/deploy-pypi/issues/6#issuecomment-721954322), use a commit SHA of a version you've manually reviewed (e.g. `uses:` [casperdcl/deploy-pypi@3181cc0919c032ba42e365bd514e27442c54a3be](https://github.com/casperdcl/deploy-pypi/commit/3181cc0919c032ba42e365bd514e27442c54a3be))
-- If you [distrust dependencies](https://github.com/casperdcl/deploy-pypi/issues/22), spilt the `build` and `upload` steps to hide publishing/OIDC tokens from the build step
+If you [distrust me](https://github.com/casperdcl/deploy-pypi/issues/6#issuecomment-721954322), use a commit SHA of a version you've manually reviewed (e.g. `uses: casperdcl/deploy-pypi@1ns3r7s0m3c0mm17sh4h3r3`).
 
 ## Inputs
 
