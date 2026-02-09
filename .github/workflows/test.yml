@@ -7,13 +7,13 @@ jobs:
   test:
     if: github.event_name != 'pull_request' || !contains('OWNER,MEMBER,COLLABORATOR', github.event.pull_request.author_association)
     name: Test py${{ matrix.python }}
-    runs-on: ubuntu-${{ matrix.python == '3.7' && '22.04' || 'latest' }}
+    runs-on: ubuntu-slim
     strategy:
       matrix:
-        python: [3.7, 3.12]
+        python: [3.8, 3.13]
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python }}
     - name: setup

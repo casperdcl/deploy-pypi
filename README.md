@@ -8,8 +8,8 @@ Securely build and upload Python distributions to PyPI.
 
 ```yaml
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
       - uses: casperdcl/deploy-pypi@v2
         with:
           build: --outdir dist .
