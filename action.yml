@@ -16,7 +16,7 @@ inputs:
   requirements:
     description: Packages to `pip install` before building
     required: false
-    default: twine wheel build
+    default: wheel build
   setup:
     description: '`setup.py` command to run ("true" is a shortcut for "clean sdist -d <dist_dir> bdist_wheel -d <dist_dir>")'
     required: false
@@ -107,7 +107,7 @@ runs:
     - name: check
       run: |
         if [[ "$INPUT_CHECK" == true ]]; then
-          python -m pip install twine
+          python -m pip install twine pkginfo # https://github.com/pypa/twine/issues/1216
           python -m twine check "${INPUT_DIST_DIR%%/}"/*
         fi
       shell: bash
